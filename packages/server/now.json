@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "name": "todos-server",
+  "alias": ["server.todos.authpack.io"],
+  "builds": [{ "src": "src/index.ts", "use": "@now/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "src/index.ts" }],
+  "env": {
+    "NODE_ENV": "production",
+    "MONGODB_URI": "@wg-mongodb-uri"
+  }
+}
