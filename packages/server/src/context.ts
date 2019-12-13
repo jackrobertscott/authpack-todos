@@ -15,5 +15,7 @@ export async function createMongoClient() {
 export async function createContext() {
   const mongoClient = await createMongoClient()
   const database = mongoClient.db(config.mongodb.db)
-  return { database }
+  return {
+    database,
+  }
 }

@@ -1,15 +1,46 @@
 import React, { useRef, useEffect, useState } from 'react'
+import axios from 'axios'
 import logo from './logo.svg'
 import './App.css'
 
-const hello = () => fetch('http://localhost:4000').then(data => data.json())
+const send = async ({
+  query,
+  variables,
+  operationName,
+}: {
+  query: string
+  variables?: { [key: string]: any }
+  operationName?: string
+}) => {
+  const { data } = await axios({
+    url: 'http://localhost:4000',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      query,
+      variables,
+      operationName,
+    },
+  })
+  return data
+}
 
 const App: React.FC = () => {
-  const go = useRef(hello)
+  const go = useRef(() => {
+    return send({
+      query: `query {
+        todo: GetTodo {
+          content
+        }
+      }`,
+    })
+  })
   const [res, resSet] = useState()
   useEffect(() => {
     go.current().then(({ data }) => {
-      resSet(data)
+      resSet(data.todo.content)
     })
   }, [])
   return (
