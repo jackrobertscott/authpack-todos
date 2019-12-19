@@ -1,16 +1,30 @@
 import React, { useEffect } from 'react'
 import { useSend } from '../utils/send'
+import { Wrapper } from './Wrapper'
+import { Home } from './Home'
+import { useAuthpack } from '@authpack/react'
+import { Todos } from './Todos'
 
 export const App: React.FC = () => {
-  const stuff = useSend()
+  const authpack = useAuthpack()
+  const stuff = useSend<{ todo: { content: string } }>(`query {
+    todo: GetTodo {
+      content
+    }
+  }`)
   useEffect(() => {
-    stuff.fetch({
-      query: `query {
-        todo: GetTodo {
-          content
-        }
-      }`,
-    })
+    stuff.fetch()
+    // eslint-disable-next-line
   }, [])
-  return <div>{stuff.value?.todo?.content}</div>
+  return (
+    <Wrapper>
+      {!authpack.ready ? (
+        <div>Loading...</div>
+      ) : authpack.user && authpack.team ? (
+        <Todos />
+      ) : (
+        <Home />
+      )}
+    </Wrapper>
+  )
 }

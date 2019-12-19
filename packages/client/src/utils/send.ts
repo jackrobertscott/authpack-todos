@@ -23,9 +23,15 @@ export const send = async ({ query, variables, operationName }: ISend) => {
   return data
 }
 
-export const useSend = () => {
-  const [value, valueSet] = useState<any>()
-  const fetch = (options: ISend) =>
-    send(options).then(({ data }) => valueSet(data))
-  return useMemo(() => ({ value, fetch }), [value])
+export const useSend = <T>(query: string) => {
+  const [value, valueSet] = useState<T | undefined>()
+  const fetch = (variables?: { [key: string]: any }) =>
+    send({ query, variables }).then(({ data }) => valueSet(data))
+  return useMemo(() => {
+    return {
+      value,
+      fetch,
+    }
+    // eslint-disable-next-line
+  }, [value])
 }
